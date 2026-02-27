@@ -1,0 +1,149 @@
+.page {
+  padding: 32px;
+  padding-bottom: 120px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  max-width: 600px;
+}
+
+.searchIcon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.input {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 24px;
+  border: 1px solid var(--bg-hover);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.searchBtn {
+  padding: 14px 24px;
+  border-radius: 24px;
+  background: var(--green);
+  color: #000;
+  font-weight: 600;
+}
+
+.searchBtn:hover {
+  background: var(--green-hover);
+}
+
+.section {
+  margin-top: 24px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sectionHead h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.playAllBtn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  background: var(--green);
+  color: #000;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.playAllBtn:hover {
+  background: var(--green-hover);
+}
+
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.loading,
+.empty {
+  color: var(--text-muted);
+  padding: 24px;
+}
+
+.cardList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 160px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.card:hover {
+  background: var(--bg-hover);
+}
+
+.cardAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), #0a0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.cardCover {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--green), #0a0);
+  margin-bottom: 12px;
+}
+
+.cardTitle {
+  font-weight: 600;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.cardSub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}

@@ -1,0 +1,115 @@
+.page {
+  padding: 32px;
+  padding-bottom: 120px;
+}
+
+.title {
+  margin: 0 0 24px;
+  font-size: 2rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tab,
+.tabActive {
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tabActive {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.section {
+  margin-top: 16px;
+}
+
+.section h2 {
+  margin: 0 0 16px;
+  font-size: 1.25rem;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sectionHead h2 {
+  margin: 0;
+}
+
+.playAllBtn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  background: var(--green);
+  color: #000;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.playAllBtn:hover {
+  background: var(--green-hover);
+}
+
+.playlistGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 24px;
+}
+
+.playlistCard {
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.playlistCard:hover {
+  background: var(--bg-hover);
+}
+
+.playlistArt {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, var(--green), #0a0);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.playlistName {
+  font-weight: 600;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.empty {
+  color: var(--text-muted);
+  padding: 24px;
+}
+
+.loading {
+  padding: 48px;
+  text-align: center;
+  color: var(--text-muted);
+}

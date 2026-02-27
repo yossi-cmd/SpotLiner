@@ -1,0 +1,36 @@
+/* Ploni - use across the project */
+@font-face {
+  font-family: 'Ploni';
+  src: url('/fonts/ploni-regular-aaa.woff2') format('woff2'),
+       url('/fonts/ploni-regular-aaa.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ploni';
+  src: url('/fonts/ploni-medium-aaa.woff2') format('woff2'),
+       url('/fonts/ploni-medium-aaa.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ploni';
+  src: url('/fonts/ploni-bold-aaa.woff2') format('woff2'),
+       url('/fonts/ploni-bold-aaa.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ploni';
+  src: url('/fonts/ploni-light-aaa.woff2') format('woff2'),
+       url('/fonts/ploni-light-aaa.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}

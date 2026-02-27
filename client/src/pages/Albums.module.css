@@ -1,0 +1,99 @@
+.page {
+  padding: 32px;
+  padding-bottom: 120px;
+}
+
+.pageHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.createBtn {
+  padding: 10px 20px;
+  border-radius: 24px;
+  background: var(--green);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.createBtn:hover {
+  background: var(--green-hover);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.card:hover {
+  background: var(--bg-hover);
+}
+
+.cover,
+.coverImg {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.cover {
+  background: linear-gradient(135deg, var(--green), #0a0);
+}
+
+.coverImg {
+  object-fit: cover;
+}
+
+.name {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artist {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.empty {
+  color: var(--text-muted);
+  padding: 24px;
+}
+
+.loading {
+  padding: 48px;
+  text-align: center;
+  color: var(--text-muted);
+}

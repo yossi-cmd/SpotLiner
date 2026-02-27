@@ -1,0 +1,264 @@
+.player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--player-height);
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--bg-hover);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 24px;
+  z-index: 20;
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  width: 100%;
+  text-align: center;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+}
+
+.artwork {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #333, #555);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.artworkImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 230px;
+  max-width: 230px;
+}
+
+.title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+a.artist:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.controls {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ctrlBtns {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.ctrlBtn {
+  font-size: 1.2rem;
+  padding: 4px 8px;
+  color: var(--text-muted);
+  display: flex;
+}
+.ctrlBtn:hover {
+  color: var(--text);
+}
+
+.playBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg-base);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.playBtn:hover {
+  transform: scale(1.05);
+}
+
+.progressWrap {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-hover);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.progressBtns {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 5px;
+  align-items: center;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--text-muted);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.volumeWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.volIcon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.volume {
+  width: 100%;
+  accent-color: var(--text);
+}
+
+.queueWrap {
+  position: relative;
+}
+
+.queueBtn {
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: var(--bg-hover);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.queueBtn:hover {
+  color: var(--text);
+}
+
+.queuePanel {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  width: 320px;
+  max-height: 360px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--bg-hover);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  overflow: scroll;
+  z-index: 30;
+}
+
+.queueHeader {
+  padding: 12px 16px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--bg-hover);
+}
+
+.queueEmpty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.queueItem {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.queueItem:hover {
+  background: var(--bg-hover);
+}
+
+.queueItemActive {
+  color: var(--green);
+}
+
+.queueItemIndex {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.queueItemInfo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.queueItemTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.queueItemArtist {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+a.queueItemArtist:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.queueItemRemove {
+  padding: 4px 8px;
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+.queueItemRemove:hover {
+  opacity: 1;
+  color: #ff6b6b;
+}

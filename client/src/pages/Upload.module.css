@@ -1,0 +1,284 @@
+.page {
+  padding: 32px;
+  padding-bottom: 120px;
+  max-width: 500px;
+}
+
+.title {
+  margin: 0 0 24px;
+  font-size: 1.75rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.input {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--bg-hover);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.fileInput {
+  padding: 8px 0;
+}
+
+.fileName {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.error {
+  background: rgba(255, 80, 80, 0.2);
+  color: #ff6b6b;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.success {
+  background: rgba(29, 185, 84, 0.2);
+  color: var(--green);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.btn {
+  padding: 14px;
+  border-radius: 24px;
+  background: var(--green);
+  color: #000;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 8px;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--green-hover);
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.hint a {
+  color: var(--green);
+  font-weight: 600;
+}
+
+select.input {
+  cursor: pointer;
+}
+
+.imageRow {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.previewWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coverPreview {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--bg-hover);
+}
+
+.removeImg {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--bg-hover);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.removeImg:hover {
+  background: #333;
+  color: var(--text);
+}
+
+.modeToggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.modeBtn,
+.modeBtnActive {
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  border: 1px solid var(--bg-hover);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.modeBtn:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+.modeBtnActive {
+  background: var(--green);
+  color: #000;
+  border-color: var(--green);
+  font-weight: 600;
+}
+
+.albumRows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.albumRowsHead {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.albumRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.albumRowFile {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.albumRow .input {
+  min-width: 100%;
+}
+
+.removeRowBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--bg-hover);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.removeRowBtn:hover {
+  background: rgba(255, 80, 80, 0.2);
+  color: #ff6b6b;
+  border-color: transparent;
+}
+
+.advancedSection {
+  padding: 16px;
+  background: var(--bg-elevated);
+  border-radius: 8px;
+  border: 1px solid var(--bg-hover);
+}
+
+.advancedHead {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.youtubeRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.youtubeRow .input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.youtubeBtn {
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: var(--bg-hover);
+  color: var(--text);
+  border: 1px solid var(--bg-hover);
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.youtubeBtn:hover:not(:disabled) {
+  background: #333;
+  border-color: #444;
+}
+
+.youtubeBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.youtubeDownloadBtn {
+  margin-top: 12px;
+  padding: 12px 20px;
+  border-radius: 20px;
+  background: var(--green);
+  color: #000;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.youtubeDownloadBtn:hover:not(:disabled) {
+  background: var(--green-hover);
+}
+
+.youtubeDownloadBtn:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.advancedHint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 12px 0 0;
+  line-height: 1.4;
+}

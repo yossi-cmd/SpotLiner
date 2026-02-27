@@ -1,0 +1,105 @@
+.page {
+  padding: 32px;
+  padding-bottom: 120px;
+}
+
+.header {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.artwork {
+  width: 220px;
+  height: 220px;
+  min-width: 220px;
+  background: linear-gradient(135deg, var(--green), #0a0);
+  border-radius: 8px;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.type {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 2.5rem;
+}
+
+.count {
+  margin: 0 0 24px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.playAllBtn {
+  padding: 12px 32px;
+  border-radius: 24px;
+  background: var(--green);
+  color: #000;
+  font-weight: 700;
+  font-size: 1rem;
+  width: fit-content;
+}
+
+.playAllBtn:hover:not(:disabled) {
+  background: var(--green-hover);
+  transform: scale(1.02);
+}
+
+.playAllBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.deleteBtn {
+  padding: 10px 20px;
+  border-radius: 24px;
+  background: rgba(255, 80, 80, 0.25);
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.deleteBtn:hover {
+  background: rgba(255, 80, 80, 0.4);
+}
+
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.empty {
+  color: var(--text-muted);
+  padding: 24px;
+}
+
+.loading,
+.error {
+  padding: 48px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.error {
+  color: #ff6b6b;
+}
