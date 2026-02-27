@@ -32,7 +32,7 @@ export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, 
   }
 
   webpush.setVapidDetails(
-    'mailto:support@spotliner.local',
+    'mailto:yossi@yossibiton.com',
     keys.publicKey,
     keys.privateKey
   );
