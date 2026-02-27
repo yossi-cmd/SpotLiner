@@ -1,11 +1,29 @@
+import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { sendTestPush } from '../api';
 import { IconHome, IconSearch, IconLibrary, IconUpload, IconUser, IconDisc, IconClose } from './Icons';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar({ isOpen = false, onClose }) {
   const { user, logout, canUpload } = useAuthStore();
   const navigate = useNavigate();
+  const [pushTesting, setPushTesting] = useState(false);
+
+  const handlePushTest = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setPushTesting(true);
+    try {
+      const r = await sendTestPush();
+      if (r.sent) window.alert('התראת בדיקה נשלחה. בדוק במכשיר.');
+      else window.alert('שליחה נכשלה: ' + (r.error || 'לא ידוע'));
+    } catch (err) {
+      window.alert('שגיאה: ' + (err.message || 'לא ידוע'));
+    } finally {
+      setPushTesting(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -62,6 +80,9 @@ export default function Sidebar({ isOpen = false, onClose }) {
         {user ? (
           <>
             <span className={styles.userName}>{user.displayName || user.email}</span>
+            <button type="button" onClick={handlePushTest} className={styles.logoutBtn} disabled={pushTesting} title="שלח התראת בדיקה">
+              {pushTesting ? 'שולח...' : 'בדיקת התראות'}
+            </button>
             <button type="button" onClick={handleLogout} className={styles.logoutBtn}>
               יציאה
             </button>

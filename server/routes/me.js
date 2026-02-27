@@ -6,6 +6,18 @@ const router = Router();
 router.use(auth);
 
 // PoC: Push subscription for "new track by favorited artist" notifications. Can be removed later.
+router.post('/push-test', async (req, res) => {
+  try {
+    const { sendTestPushToUser } = await import('../push.js');
+    const result = await sendTestPushToUser(req.userId);
+    if (result.sent) return res.json({ sent: true });
+    return res.status(400).json({ sent: false, error: result.error });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || 'Push test failed' });
+  }
+});
+
 router.post('/push-subscription', async (req, res) => {
   try {
     const { subscription } = req.body;

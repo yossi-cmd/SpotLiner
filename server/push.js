@@ -73,3 +73,44 @@ export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, 
     }
   }
 }
+
+/** Send a test push to one user (for debugging). Returns { sent, error? }. */
+export async function sendTestPushToUser(userId) {
+  const keys = getVapidKeys();
+  if (!keys) return { sent: false, error: 'VAPID keys not set' };
+
+  let webpush;
+  try {
+    webpush = (await import('web-push')).default;
+  } catch (e) {
+    return { sent: false, error: 'web-push not installed' };
+  }
+
+  const sub = await pool.query(
+    'SELECT endpoint, p256dh, auth FROM push_subscriptions WHERE user_id = $1',
+    [userId]
+  );
+  if (!sub.rows.length) return { sent: false, error: 'No push subscription for this user' };
+
+  webpush.setVapidDetails('mailto:support@spotliner.local', keys.publicKey, keys.privateKey);
+
+  const payload = JSON.stringify({
+    title: 'בדיקה',
+    body: 'התראת טסט מספוטליינר',
+    url: '/',
+  });
+
+  try {
+    await webpush.sendNotification(
+      {
+        endpoint: sub.rows[0].endpoint,
+        keys: { p256dh: sub.rows[0].p256dh, auth: sub.rows[0].auth },
+      },
+      payload,
+      { TTL: 60 }
+    );
+    return { sent: true };
+  } catch (err) {
+    return { sent: false, error: err.message || String(err) };
+  }
+}

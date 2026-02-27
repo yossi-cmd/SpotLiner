@@ -77,6 +77,17 @@ export async function savePushSubscription(subscription) {
   return data;
 }
 
+/** PoC: Send a test push notification to current user. Returns { sent, error? }. */
+export async function sendTestPush() {
+  const res = await fetch(`${API_BASE}/api/me/push-test`, {
+    method: 'POST',
+    headers: headers(),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Failed');
+  return data;
+}
+
 export async function getTracks(params = {}) {
   const q = new URLSearchParams(params).toString();
   const res = await fetch(`${API_BASE}/api/tracks${q ? '?' + q : ''}`, { headers: headers() });
