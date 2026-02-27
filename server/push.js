@@ -5,7 +5,6 @@
  * Required: In .env set VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY.
  * Generate with: npx web-push generate-vapid-keys
  */
-import webpush from 'web-push';
 import pool from './db/index.js';
 
 function getVapidKeys() {
@@ -24,6 +23,13 @@ export function getVapidPublicKey() {
 export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, trackId, excludeUserId = null) {
   const keys = getVapidKeys();
   if (!keys) return;
+
+  let webpush;
+  try {
+    webpush = (await import('web-push')).default;
+  } catch {
+    return;
+  }
 
   webpush.setVapidDetails(
     'mailto:support@spotliner.local',
