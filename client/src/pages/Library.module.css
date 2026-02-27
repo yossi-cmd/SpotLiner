@@ -3,6 +3,26 @@
   padding-bottom: 120px;
 }
 
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+    padding-bottom: 24px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+  }
+
+  .playlistGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
 .title {
   margin: 0 0 24px;
   font-size: 2rem;

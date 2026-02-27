@@ -3,6 +3,31 @@
   padding-bottom: 120px;
 }
 
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+    padding-bottom: 24px;
+  }
+
+  .searchBox {
+    margin-bottom: 20px;
+  }
+
+  .sectionHead h2 {
+    font-size: 1.25rem;
+  }
+
+  .cardList {
+    gap: 12px;
+    justify-content: space-between;
+  }
+
+  .card {
+    width: calc(50% - 6px);
+    min-width: 0;
+  }
+}
+
 .searchBox {
   display: flex;
   align-items: center;

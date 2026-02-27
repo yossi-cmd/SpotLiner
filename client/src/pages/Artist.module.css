@@ -202,3 +202,42 @@
 .error {
   color: #ff6b6b;
 }
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+    padding-bottom: 24px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .avatar,
+  .avatarImg {
+    width: 160px;
+    height: 160px;
+    min-width: 160px;
+  }
+
+  .avatar {
+    font-size: 4rem;
+  }
+
+  .meta {
+    align-items: center;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .headerActions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

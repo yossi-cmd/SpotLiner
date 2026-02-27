@@ -10,6 +10,8 @@
   --text-muted: #B3B3B3;
   --sidebar-width: 240px;
   --player-height: 90px;
+  --mobile-header-height: 52px;
+  --mobile-nav-height: 56px;
   --font-family: 'Ploni', 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
@@ -27,6 +29,7 @@ body {
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
   padding-bottom: var(--player-height);
 }
 
@@ -52,7 +55,12 @@ input {
 [dir="rtl"] .main-content { margin-left: 0; margin-right: var(--sidebar-width); }
 
 @media (max-width: 768px) {
-  .main {
-    padding: 16px;
+  :root {
+    --player-height: 72px;
+  }
+
+  #root {
+    padding-bottom: 0;
   }
 }
+

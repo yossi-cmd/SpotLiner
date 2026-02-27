@@ -1,17 +1,70 @@
 .layout {
   display: flex;
   min-height: 100vh;
+  padding-top: 0;
+}
+
+.mobileHeader {
+  display: none;
 }
 
 .main {
   flex: 1;
   margin-left: var(--sidebar-width);
+  margin-top: 0;
   background: var(--bg-base);
   min-height: calc(100vh - var(--player-height));
   overflow-y: auto;
+  padding-top: 0;
 }
 
 [dir="rtl"] .main {
   margin-left: 0;
   margin-right: var(--sidebar-width);
+}
+
+@media (max-width: 768px) {
+  .mobileHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--mobile-header-height, 52px);
+    padding: 0 16px;
+    padding-top: env(safe-area-inset-top, 0);
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--bg-hover);
+    z-index: 12;
+  }
+
+  .menuBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--text);
+    border-radius: 8px;
+  }
+
+  .menuBtn:hover {
+    background: var(--bg-hover);
+  }
+
+  .mobileLogo {
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+
+  .main {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-top: calc(var(--mobile-header-height, 52px) + env(safe-area-inset-top, 0));
+    padding-bottom: calc(var(--player-height) + var(--mobile-nav-height, 56px) + env(safe-area-inset-bottom, 0));
+  }
 }

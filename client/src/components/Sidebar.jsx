@@ -1,46 +1,58 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { IconHome, IconSearch, IconLibrary, IconUpload, IconUser, IconDisc } from './Icons';
+import { IconHome, IconSearch, IconLibrary, IconUpload, IconUser, IconDisc, IconClose } from './Icons';
 import styles from './Sidebar.module.css';
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen = false, onClose }) {
   const { user, logout, canUpload } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+    onClose?.();
+  };
+
+  const handleNavClick = () => {
+    onClose?.();
   };
 
   return (
-    <aside className={styles.sidebar}>
-      <NavLink to="/" className={styles.logo}>
-        <span className={styles.logoIcon}>S</span>
-        <span>ספוטליינר</span>
-      </NavLink>
+    <>
+      <div className={`${styles.backdrop} ${isOpen ? styles.backdropOpen : ''}`} onClick={onClose} aria-hidden="true" />
+      <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`} aria-label="תפריט צד">
+      <div className={styles.logoRow}>
+        <NavLink to="/" className={styles.logo} onClick={handleNavClick}>
+          <span className={styles.logoIcon}>S</span>
+          <span>ספוטליינר</span>
+        </NavLink>
+        <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="סגור תפריט">
+          <IconClose size={24} />
+        </button>
+      </div>
       <nav className={styles.nav}>
-        <NavLink to="/" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} end>
+        <NavLink to="/" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} end onClick={handleNavClick}>
           <span className={styles.icon}><IconHome className={styles.iconSvg} /></span>
           <span>דף הבית</span>
         </NavLink>
-        <NavLink to="/search" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)}>
+        <NavLink to="/search" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} onClick={handleNavClick}>
           <span className={styles.icon}><IconSearch className={styles.iconSvg} /></span>
           <span>חיפוש</span>
         </NavLink>
-        <NavLink to="/library" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)}>
+        <NavLink to="/library" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} onClick={handleNavClick}>
           <span className={styles.icon}><IconLibrary className={styles.iconSvg} /></span>
           <span>הספרייה שלי</span>
         </NavLink>
-        <NavLink to="/artists" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)}>
+        <NavLink to="/artists" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} onClick={handleNavClick}>
           <span className={styles.icon}><IconUser className={styles.iconSvg} /></span>
           <span>אומנים</span>
         </NavLink>
-        <NavLink to="/albums" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)}>
+        <NavLink to="/albums" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} onClick={handleNavClick}>
           <span className={styles.icon}><IconDisc className={styles.iconSvg} /></span>
           <span>אלבומים</span>
         </NavLink>
         {canUpload() && (
-          <NavLink to="/upload" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)}>
+          <NavLink to="/upload" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} onClick={handleNavClick}>
             <span className={styles.icon}><IconUpload className={styles.iconSvg} /></span>
             <span>העלאת שיר</span>
           </NavLink>
@@ -56,6 +68,7 @@ export default function Sidebar() {
           </>
         ) : null}
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

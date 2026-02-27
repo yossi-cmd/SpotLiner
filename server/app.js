@@ -13,6 +13,7 @@ import artistsRoutes from './routes/artists.js';
 import albumsRoutes from './routes/albums.js';
 import uploadRoutes from './routes/upload.js';
 import youtubeRoutes from './routes/youtube.js';
+import { runStartupMigrations } from './db/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -46,9 +47,16 @@ app.use((err, req, res, next) => {
 });
 
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
-    console.log(`Spotliner server running at http://localhost:${PORT}`);
-  });
+  runStartupMigrations()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Spotliner server running at http://localhost:${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error('Server startup failed:', err);
+      process.exit(1);
+    });
 }
 
 export default app;

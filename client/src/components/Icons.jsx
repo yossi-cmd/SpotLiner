@@ -203,3 +203,14 @@ export function IconMoreVertical(props) {
     </svg>
   );
 }
+
+export function IconMenu(props) {
+  const { className, size: s, ...rest } = props;
+  return (
+    <svg width={s ?? size} height={s ?? size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className} {...rest}>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="4" y1="12" x2="20" y2="12" />
+      <line x1="4" y1="18" x2="20" y2="18" />
+    </svg>
+  );
+}

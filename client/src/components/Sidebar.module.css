@@ -1,3 +1,18 @@
+.backdrop {
+  display: none;
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px 24px;
+}
+
+.closeBtn {
+  display: none;
+}
+
 .sidebar {
   position: fixed;
   top: 0;
@@ -15,10 +30,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 24px 24px;
   font-weight: 700;
   font-size: 1.5rem;
   color: var(--text);
+  text-decoration: none;
 }
 
 .logoIcon {
@@ -100,4 +115,64 @@
 
 .logoutBtn:hover {
   background: #333;
+}
+
+@media (max-width: 768px) {
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 14;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+  }
+
+  .backdropOpen {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .sidebar {
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top, 0);
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+    z-index: 16;
+  }
+
+  [dir="rtl"] .sidebar {
+    right: auto;
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  [dir="rtl"] .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .closeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--text-muted);
+    border-radius: 8px;
+  }
+
+  .closeBtn:hover {
+    background: var(--bg-hover);
+    color: var(--text);
+  }
 }
