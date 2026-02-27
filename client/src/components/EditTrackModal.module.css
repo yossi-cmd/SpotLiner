@@ -51,6 +51,12 @@
   border-color: var(--green);
 }
 
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+
 .imageRow {
   display: flex;
   flex-direction: column;

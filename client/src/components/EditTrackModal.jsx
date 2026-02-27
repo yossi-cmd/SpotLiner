@@ -6,6 +6,7 @@ export default function EditTrackModal({ track, onClose, onSaved }) {
   const [title, setTitle] = useState(track?.title || '');
   const [artistId, setArtistId] = useState(track?.artist_id || '');
   const [albumId, setAlbumId] = useState(track?.album_id || '');
+  const [featuredArtistIds, setFeaturedArtistIds] = useState([]);
   const [imagePath, setImagePath] = useState(undefined);
   const [artists, setArtists] = useState([]);
   const [albums, setAlbums] = useState([]);
@@ -17,6 +18,7 @@ export default function EditTrackModal({ track, onClose, onSaved }) {
     setTitle(track.title);
     setArtistId(track.artist_id || '');
     setAlbumId(track.album_id || '');
+    setFeaturedArtistIds(Array.isArray(track.featured_artists) ? track.featured_artists.map((a) => a.id) : []);
     setImagePath(undefined);
   }, [track]);
 
@@ -61,6 +63,7 @@ export default function EditTrackModal({ track, onClose, onSaved }) {
         title: title.trim(),
         artist_id: artistId ? parseInt(artistId, 10) : undefined,
         album_id: albumId ? parseInt(albumId, 10) : undefined,
+        featured_artist_ids: featuredArtistIds,
         image_path: imagePath,
       });
       onSaved();
@@ -100,6 +103,26 @@ export default function EditTrackModal({ track, onClose, onSaved }) {
                 <option key={al.id} value={al.id}>{al.name}</option>
               ))}
             </select>
+          </label>
+          <label className={styles.label}>
+            אמנים משניים
+            <select
+              multiple
+              size={4}
+              value={featuredArtistIds.map(String)}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions, (o) => parseInt(o.value, 10));
+                setFeaturedArtistIds(selected);
+              }}
+              className={styles.input}
+            >
+              {artists
+                .filter((a) => a.id !== (artistId ? parseInt(artistId, 10) : null))
+                .map((a) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+            </select>
+            <span className={styles.hint}>החזק Ctrl/Cmd לבחירה מרובה</span>
           </label>
           <label className={styles.label}>
             תמונת כיסוי

@@ -256,12 +256,13 @@ export async function updateAlbum(id, { name, artist_id, image_path }) {
   return data;
 }
 
-export async function updateTrack(id, { title, artist_id, album_id, image_path }) {
+export async function updateTrack(id, { title, artist_id, album_id, image_path, featured_artist_ids }) {
   const body = {};
   if (title !== undefined) body.title = title;
   if (artist_id !== undefined) body.artist_id = artist_id;
   if (album_id !== undefined) body.album_id = album_id;
   if (image_path !== undefined) body.image_path = image_path;
+  if (featured_artist_ids !== undefined) body.featured_artist_ids = featured_artist_ids;
   const res = await fetch(`${API_BASE}/api/tracks/${id}`, {
     method: 'PUT',
     headers: headers(),

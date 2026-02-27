@@ -129,11 +129,24 @@ export default function TrackRow({ track, index, showAlbum = true, playlistId, o
       </div>
       <div className={styles.info}>
         <span className={styles.title}>{track.title}</span>
-        {track.artist_id ? (
-          <Link to={`/artist/${track.artist_id}`} className={styles.artist} onClick={(e) => e.stopPropagation()}>{track.artist || '—'}</Link>
-        ) : (
-          <span className={styles.artist}>{track.artist || '—'}</span>
-        )}
+        <span className={styles.artist}>
+          {track.artist_id ? (
+            <Link to={`/artist/${track.artist_id}`} onClick={(e) => e.stopPropagation()}>{track.artist || '—'}</Link>
+          ) : (
+            track.artist || '—'
+          )}
+          {Array.isArray(track.featured_artists) && track.featured_artists.length > 0 && (
+            <>
+              {' feat. '}
+              {track.featured_artists.map((a, i) => (
+                <span key={a.id}>
+                  {i > 0 && ', '}
+                  <Link to={`/artist/${a.id}`} onClick={(e) => e.stopPropagation()}>{a.name}</Link>
+                </span>
+              ))}
+            </>
+          )}
+        </span>
       </div>
       {showAlbum && (
         track.album_id ? (
