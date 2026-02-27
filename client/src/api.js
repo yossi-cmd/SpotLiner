@@ -58,6 +58,25 @@ export async function getMe() {
   return data;
 }
 
+/** PoC: Get config (e.g. VAPID public key for push). Can remove later. */
+export async function getConfig() {
+  const res = await fetch(`${API_BASE}/api/config`);
+  const data = await res.json().catch(() => ({}));
+  return data;
+}
+
+/** PoC: Save push subscription for "new track by favorited artist" notifications. Can remove later. */
+export async function savePushSubscription(subscription) {
+  const res = await fetch(`${API_BASE}/api/me/push-subscription`, {
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify({ subscription }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Failed to save subscription');
+  return data;
+}
+
 export async function getTracks(params = {}) {
   const q = new URLSearchParams(params).toString();
   const res = await fetch(`${API_BASE}/api/tracks${q ? '?' + q : ''}`, { headers: headers() });

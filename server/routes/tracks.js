@@ -245,7 +245,14 @@ router.post('/', auth, requireRole(['admin', 'uploader']), upload.single('audio'
        RETURNING id, title, artist, album, duration_seconds, created_at, image_path`,
       [title.trim(), artistName, albumName, artistId, albumId, duration, req.file.filename, req.userId, trackImagePath || null]
     );
-    res.status(201).json(result.rows[0]);
+    const track = result.rows[0];
+    try {
+      const { notifyNewTrackForArtist } = await import('../push.js');
+      await notifyNewTrackForArtist(artistId, artistName, track.title, track.id, req.userId);
+    } catch (e) {
+      console.warn('Push notify failed:', e.message);
+    }
+    res.status(201).json(track);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Upload failed' });

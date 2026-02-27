@@ -5,6 +5,26 @@ import { auth } from '../middleware/auth.js';
 const router = Router();
 router.use(auth);
 
+// PoC: Push subscription for "new track by favorited artist" notifications. Can be removed later.
+router.post('/push-subscription', async (req, res) => {
+  try {
+    const { subscription } = req.body;
+    if (!subscription?.endpoint || !subscription?.keys?.p256dh || !subscription?.keys?.auth) {
+      return res.status(400).json({ error: 'Invalid subscription' });
+    }
+    await pool.query(
+      `INSERT INTO push_subscriptions (user_id, endpoint, p256dh, auth)
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (user_id) DO UPDATE SET endpoint = $2, p256dh = $3, auth = $4`,
+      [req.userId, subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth]
+    );
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to save subscription' });
+  }
+});
+
 // Favorites
 router.get('/favorites', async (req, res) => {
   try {

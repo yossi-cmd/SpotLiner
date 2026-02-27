@@ -25,6 +25,16 @@ export async function runStartupMigrations() {
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_track_featured_artists_track ON track_featured_artists(track_id)
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS push_subscriptions (
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        endpoint TEXT NOT NULL,
+        p256dh TEXT NOT NULL,
+        auth TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        PRIMARY KEY (user_id)
+      )
+    `);
   } catch (err) {
     console.error('Startup migration (track_featured_artists) failed:', err.message);
   }

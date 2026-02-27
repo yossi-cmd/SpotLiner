@@ -14,6 +14,7 @@ import albumsRoutes from './routes/albums.js';
 import uploadRoutes from './routes/upload.js';
 import youtubeRoutes from './routes/youtube.js';
 import { runStartupMigrations } from './db/index.js';
+import { getVapidPublicKey } from './push.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
@@ -37,6 +38,10 @@ app.use(`${apiBase}/albums`, albumsRoutes);
 app.use(`${apiBase}/youtube`, youtubeRoutes);
 
 app.get(`${apiBase}/health`, (req, res) => res.json({ ok: true }));
+
+app.get(`${apiBase}/config`, (req, res) => {
+  res.json({ vapidPublicKey: getVapidPublicKey() });
+});
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
