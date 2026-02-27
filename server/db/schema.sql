@@ -45,6 +45,14 @@ CREATE INDEX idx_tracks_artist_id ON tracks(artist_id);
 CREATE INDEX idx_tracks_album_id ON tracks(album_id);
 CREATE INDEX idx_albums_artist_id ON albums(artist_id);
 
+CREATE TABLE track_featured_artists (
+  track_id INTEGER NOT NULL REFERENCES tracks(id) ON DELETE CASCADE,
+  artist_id INTEGER NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
+  position INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (track_id, artist_id)
+);
+CREATE INDEX idx_track_featured_artists_track ON track_featured_artists(track_id);
+
 CREATE TABLE playlists (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,

@@ -38,10 +38,11 @@ router.get('/', optionalAuth, async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
     const offset = parseInt(req.query.offset, 10) || 0;
     let result;
+    const featuredSub = "(SELECT COALESCE(json_agg(json_build_object('id', fa.id, 'name', fa.name) ORDER BY tfa.position), '[]'::json) FROM track_featured_artists tfa JOIN artists fa ON fa.id = tfa.artist_id WHERE tfa.track_id = t.id)";
     if (q) {
       result = await pool.query(
         `SELECT t.id, t.title, t.artist, t.album, t.duration_seconds, t.created_at, t.uploaded_by, t.artist_id, t.album_id, t.image_path,
-         COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path
+         COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path, ${featuredSub} AS featured_artists
          FROM tracks t
          LEFT JOIN albums al ON t.album_id = al.id
          LEFT JOIN artists a ON t.artist_id = a.id
@@ -53,7 +54,7 @@ router.get('/', optionalAuth, async (req, res) => {
     } else {
       result = await pool.query(
         `SELECT t.id, t.title, t.artist, t.album, t.duration_seconds, t.created_at, t.uploaded_by, t.artist_id, t.album_id, t.image_path,
-         COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path
+         COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path, ${featuredSub} AS featured_artists
          FROM tracks t
          LEFT JOIN albums al ON t.album_id = al.id
          LEFT JOIN artists a ON t.artist_id = a.id
@@ -71,9 +72,10 @@ router.get('/', optionalAuth, async (req, res) => {
 // Get single track metadata
 router.get('/:id', optionalAuth, async (req, res) => {
   try {
+    const featuredSub = "(SELECT COALESCE(json_agg(json_build_object('id', fa.id, 'name', fa.name) ORDER BY tfa.position), '[]'::json) FROM track_featured_artists tfa JOIN artists fa ON fa.id = tfa.artist_id WHERE tfa.track_id = t.id)";
     const result = await pool.query(
       `SELECT t.id, t.title, t.artist, t.album, t.duration_seconds, t.created_at, t.uploaded_by, t.artist_id, t.album_id, t.image_path,
-       COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path
+       COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path, ${featuredSub} AS featured_artists
        FROM tracks t
        LEFT JOIN albums al ON t.album_id = al.id
        LEFT JOIN artists a ON t.artist_id = a.id
@@ -133,7 +135,7 @@ router.put('/:id', auth, async (req, res) => {
     if (!track.rows.length) return res.status(404).json({ error: 'Track not found' });
     const canEdit = req.userRole === 'admin' || track.rows[0].uploaded_by === req.userId;
     if (!canEdit) return res.status(403).json({ error: 'Cannot edit this track' });
-    const { title, artist_id, album_id, image_path } = req.body;
+    const { title, artist_id, album_id, image_path, featured_artist_ids } = req.body;
     let artistName = null;
     let albumName = null;
     let artistId = track.rows[0].artist_id;
@@ -171,9 +173,19 @@ router.put('/:id', auth, async (req, res) => {
         [newTitle, artistName || '', albumName || '', artistId, albumId, req.params.id]
       );
     }
+    const trackId = parseInt(req.params.id, 10);
+    await pool.query('DELETE FROM track_featured_artists WHERE track_id = $1', [trackId]);
+    const featuredIds = Array.isArray(featured_artist_ids) ? featured_artist_ids.map((id) => parseInt(id, 10)).filter((id) => Number.isInteger(id) && id > 0) : [];
+    const uniqueFeatured = [...new Set(featuredIds)].filter((id) => id !== artistId);
+    for (let i = 0; i < uniqueFeatured.length; i++) {
+      const aid = uniqueFeatured[i];
+      const a = await pool.query('SELECT id FROM artists WHERE id = $1', [aid]);
+      if (a.rows.length) await pool.query('INSERT INTO track_featured_artists (track_id, artist_id, position) VALUES ($1, $2, $3)', [trackId, aid, i]);
+    }
+    const featuredSub = "(SELECT COALESCE(json_agg(json_build_object('id', fa.id, 'name', fa.name) ORDER BY tfa.position), '[]'::json) FROM track_featured_artists tfa JOIN artists fa ON fa.id = tfa.artist_id WHERE tfa.track_id = t.id)";
     const r = await pool.query(
-      'SELECT id, title, artist, album, duration_seconds, created_at, image_path FROM tracks WHERE id = $1',
-      [req.params.id]
+      `SELECT t.id, t.title, t.artist, t.album, t.duration_seconds, t.created_at, t.image_path, t.artist_id, t.album_id, ${featuredSub} AS featured_artists FROM tracks t WHERE t.id = $1`,
+      [trackId]
     );
     res.json(r.rows[0]);
   } catch (err) {

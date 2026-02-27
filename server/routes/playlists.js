@@ -43,9 +43,10 @@ router.get('/:id', async (req, res) => {
     if (!pl.rows.length) return res.status(404).json({ error: 'Playlist not found' });
     const p = pl.rows[0];
     if (p.user_id !== req.userId && !p.is_public) return res.status(403).json({ error: 'Forbidden' });
+    const featuredSub = "(SELECT COALESCE(json_agg(json_build_object('id', fa.id, 'name', fa.name) ORDER BY tfa.position), '[]'::json) FROM track_featured_artists tfa JOIN artists fa ON fa.id = tfa.artist_id WHERE tfa.track_id = t.id)";
     const tracks = await pool.query(
       `SELECT t.id, t.title, t.artist, t.album, t.duration_seconds, t.artist_id, t.album_id, t.image_path, pt.position,
-       COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path
+       COALESCE(t.image_path, al.image_path, a.image_path) AS cover_image_path, ${featuredSub} AS featured_artists
        FROM playlist_tracks pt JOIN tracks t ON t.id = pt.track_id
        LEFT JOIN albums al ON t.album_id = al.id
        LEFT JOIN artists a ON t.artist_id = a.id
