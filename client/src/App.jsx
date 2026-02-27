@@ -15,6 +15,7 @@ import CreateArtist from './pages/CreateArtist';
 import Albums from './pages/Albums';
 import Album from './pages/Album';
 import CreateAlbum from './pages/CreateAlbum';
+import Settings from './pages/Settings';
 
 function UploadGuard() {
   const canUpload = useAuthStore((s) => s.canUpload());
@@ -69,6 +70,7 @@ function App() {
         <Route path="albums" element={<Albums />} />
         <Route path="albums/new" element={<CreateAlbumGuard />} />
         <Route path="album/:id" element={<Album />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

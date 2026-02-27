@@ -5,6 +5,7 @@ import Player from './Player';
 import MobileNav from './MobileNav';
 import { useFavoritesStore } from '../store/favoritesStore';
 import { useAuthStore } from '../store/authStore';
+import { usePWAStore } from '../store/pwaStore';
 import { getConfig, savePushSubscription } from '../api';
 import { IconMenu } from './Icons';
 import styles from './Layout.module.css';
@@ -40,6 +41,15 @@ export default function Layout() {
     }
     return () => { document.body.style.overflow = ''; };
   }, [sidebarOpen]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      usePWAStore.getState().setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
 
   // PoC: Register for push when user is logged in (new track by favorited artist). Can remove later.
   useEffect(() => {

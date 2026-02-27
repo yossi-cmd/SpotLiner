@@ -77,6 +77,29 @@ export async function savePushSubscription(subscription) {
   return data;
 }
 
+/** PoC: Request notification permission and register for push. Call after user grants permission. */
+export async function registerPushSubscription() {
+  const config = await getConfig();
+  if (!config?.vapidPublicKey) throw new Error('Push not configured');
+  const reg = await navigator.serviceWorker.ready;
+  let sub = await reg.pushManager.getSubscription();
+  if (!sub) {
+    const key = (base64) => {
+      const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+      const b64 = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const raw = atob(b64);
+      const out = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+      return out;
+    };
+    sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: key(config.vapidPublicKey),
+    });
+  }
+  await savePushSubscription(sub.toJSON());
+}
+
 /** PoC: Send a test push notification to current user. Returns { sent, error? }. */
 export async function sendTestPush() {
   const res = await fetch(`${API_BASE}/api/me/push-test`, {

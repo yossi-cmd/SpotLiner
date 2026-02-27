@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { IconHome, IconSearch, IconLibrary, IconUser, IconDisc, IconUpload } from './Icons';
+import { IconHome, IconSearch, IconLibrary, IconUser, IconDisc, IconUpload, IconSettings } from './Icons';
 import styles from './MobileNav.module.css';
 
 export default function MobileNav() {
@@ -34,6 +34,10 @@ export default function MobileNav() {
           <span>העלאה</span>
         </NavLink>
       )}
+      <NavLink to="/settings" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)}>
+        <IconSettings size={22} className={styles.icon} />
+        <span>הגדרות</span>
+      </NavLink>
     </nav>
   );
 }
