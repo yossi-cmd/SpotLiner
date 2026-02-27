@@ -18,23 +18,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3001;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 const uploadsBase = path.resolve(process.env.UPLOAD_PATH || './uploads/audio', '..');
+const apiBase = process.env.VERCEL ? '' : '/api';
 
 const app = express();
 app.use(cors({ origin: CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use('/uploads', express.static(uploadsBase));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/tracks', tracksRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/playlists', playlistsRoutes);
-app.use('/api/me', meRoutes);
-app.use('/api/artists', artistsRoutes);
-app.use('/api/albums', albumsRoutes);
-app.use('/api/youtube', youtubeRoutes);
+app.use(`${apiBase}/auth`, authRoutes);
+app.use(`${apiBase}/upload`, uploadRoutes);
+app.use(`${apiBase}/tracks`, tracksRoutes);
+app.use(`${apiBase}/search`, searchRoutes);
+app.use(`${apiBase}/playlists`, playlistsRoutes);
+app.use(`${apiBase}/me`, meRoutes);
+app.use(`${apiBase}/artists`, artistsRoutes);
+app.use(`${apiBase}/albums`, albumsRoutes);
+app.use(`${apiBase}/youtube`, youtubeRoutes);
 
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.get(`${apiBase}/health`, (req, res) => res.json({ ok: true }));
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
