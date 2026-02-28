@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { usePWAStore } from '../store/pwaStore';
-import { registerPushSubscription } from '../api';
+import { registerPushSubscription, getMyNotifications, resendNotification } from '../api';
 import { IconSettings, IconDownload } from '../components/Icons';
 import styles from './Settings.module.css';
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
 
 export default function Settings() {
   const installPrompt = usePWAStore((s) => s.installPrompt);
   const [notifyLoading, setNotifyLoading] = useState(false);
   const [notifyMessage, setNotifyMessage] = useState('');
   const [installMessage, setInstallMessage] = useState('');
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(true);
+  const [resendingId, setResendingId] = useState(null);
+  const [resendMessage, setResendMessage] = useState('');
 
   const hasNotificationSupport = typeof window !== 'undefined' && 'Notification' in window;
   const notificationPermission = hasNotificationSupport ? Notification.permission : 'unsupported';
@@ -47,6 +58,27 @@ export default function Settings() {
   };
 
   const isStandalone = typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches;
+
+  useEffect(() => {
+    getMyNotifications({ limit: 30 })
+      .then((r) => setNotifications(r.notifications || []))
+      .catch(() => setNotifications([]))
+      .finally(() => setNotificationsLoading(false));
+  }, []);
+
+  const handleResend = async (id) => {
+    setResendingId(id);
+    setResendMessage('');
+    try {
+      await resendNotification(id);
+      setResendMessage('ההתראה נשלחה שוב.');
+      setTimeout(() => setResendMessage(''), 3000);
+    } catch (err) {
+      setResendMessage('שליחה חוזרת נכשלה: ' + (err.message || ''));
+    } finally {
+      setResendingId(null);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -99,6 +131,44 @@ export default function Settings() {
             </button>
             {installMessage && <p className={styles.message}>{installMessage}</p>}
           </>
+        )}
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>ההתראות שנשלחו אליי</h2>
+        <p className={styles.desc}>
+          רשימת ההתראות שקבלת (שיר חדש לאומן שאהבת). אפשר לשלוח שוב.
+        </p>
+        {resendMessage && <p className={styles.message}>{resendMessage}</p>}
+        {notificationsLoading ? (
+          <p className={styles.status}>טוען...</p>
+        ) : notifications.length === 0 ? (
+          <p className={styles.status}>עדיין לא נשלחו אליך התראות.</p>
+        ) : (
+          <ul className={styles.notifList}>
+            {notifications.map((n) => (
+              <li key={n.id} className={styles.notifItem}>
+                <div className={styles.notifContent}>
+                  <span className={styles.notifText}>
+                    {n.artist_name && n.track_title ? `${n.artist_name}: ${n.track_title}` : n.track_title || n.artist_name || 'התראה'}
+                  </span>
+                  {n.artist_id && (
+                    <Link to={`/artist/${n.artist_id}`} className={styles.notifLink}>לאומן</Link>
+                  )}
+                  <span className={styles.notifDate}>{formatDate(n.sent_at)}</span>
+                </div>
+                <button
+                  type="button"
+                  className={styles.resendBtn}
+                  onClick={() => handleResend(n.id)}
+                  disabled={resendingId !== null}
+                  title="שלח שוב"
+                >
+                  {resendingId === n.id ? 'שולח...' : 'שלח שוב'}
+                </button>
+              </li>
+            ))}
+          </ul>
         )}
       </section>
     </div>

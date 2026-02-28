@@ -38,7 +38,7 @@ export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, 
   );
 
   const subs = await pool.query(
-    `SELECT ps.endpoint, ps.p256dh, ps.auth
+    `SELECT ps.user_id, ps.endpoint, ps.p256dh, ps.auth
      FROM push_subscriptions ps
      INNER JOIN (
        SELECT DISTINCT f.user_id
@@ -65,6 +65,11 @@ export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, 
         },
         payload,
         { TTL: 60 }
+      );
+      await pool.query(
+        `INSERT INTO push_notification_log (user_id, track_id, artist_id, artist_name, track_title)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [row.user_id, trackId, artistId, artistName, trackTitle]
       );
     } catch (err) {
       if (err.statusCode === 410 || err.statusCode === 404) {
@@ -98,6 +103,54 @@ export async function sendTestPushToUser(userId) {
     title: 'בדיקה',
     body: 'התראת טסט מספוטליינר',
     url: '/',
+  });
+
+  try {
+    await webpush.sendNotification(
+      {
+        endpoint: sub.rows[0].endpoint,
+        keys: { p256dh: sub.rows[0].p256dh, auth: sub.rows[0].auth },
+      },
+      payload,
+      { TTL: 60 }
+    );
+    return { sent: true };
+  } catch (err) {
+    return { sent: false, error: err.message || String(err) };
+  }
+}
+
+/** Resend a previously sent notification (by log id) to the same user. */
+export async function resendPushNotification(logId, userId) {
+  const keys = getVapidKeys();
+  if (!keys) return { sent: false, error: 'VAPID keys not set' };
+
+  const log = await pool.query(
+    'SELECT id, track_id, artist_id, artist_name, track_title FROM push_notification_log WHERE id = $1 AND user_id = $2',
+    [logId, userId]
+  );
+  if (!log.rows.length) return { sent: false, error: 'Notification not found' };
+
+  const row = log.rows[0];
+  const sub = await pool.query(
+    'SELECT endpoint, p256dh, auth FROM push_subscriptions WHERE user_id = $1',
+    [userId]
+  );
+  if (!sub.rows.length) return { sent: false, error: 'No push subscription' };
+
+  let webpush;
+  try {
+    webpush = (await import('web-push')).default;
+  } catch {
+    return { sent: false, error: 'web-push not installed' };
+  }
+
+  webpush.setVapidDetails('mailto:yossi@yossibiton.com', keys.publicKey, keys.privateKey);
+
+  const payload = JSON.stringify({
+    title: 'שיר חדש',
+    body: `${row.artist_name || 'אומן'}: ${row.track_title || 'שיר'}`,
+    url: row.artist_id ? `/artist/${row.artist_id}` : '/',
   });
 
   try {

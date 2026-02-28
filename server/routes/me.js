@@ -37,6 +37,36 @@ router.post('/push-subscription', async (req, res) => {
   }
 });
 
+router.get('/notifications', async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
+    const r = await pool.query(
+      `SELECT id, track_id, artist_id, artist_name, track_title, sent_at
+       FROM push_notification_log
+       WHERE user_id = $1
+       ORDER BY sent_at DESC
+       LIMIT $2`,
+      [req.userId, limit]
+    );
+    res.json({ notifications: r.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch notifications' });
+  }
+});
+
+router.post('/notifications/:id/resend', async (req, res) => {
+  try {
+    const { resendPushNotification } = await import('../push.js');
+    const result = await resendPushNotification(parseInt(req.params.id, 10), req.userId);
+    if (result.sent) return res.json({ sent: true });
+    return res.status(400).json({ sent: false, error: result.error });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || 'Resend failed' });
+  }
+});
+
 // Favorites
 router.get('/favorites', async (req, res) => {
   try {

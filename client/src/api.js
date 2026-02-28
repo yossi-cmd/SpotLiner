@@ -111,6 +111,26 @@ export async function sendTestPush() {
   return data;
 }
 
+/** List push notifications sent to current user. */
+export async function getMyNotifications(params = {}) {
+  const q = new URLSearchParams(params).toString();
+  const res = await fetch(`${API_BASE}/api/me/notifications${q ? '?' + q : ''}`, { headers: headers() });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch notifications');
+  return data;
+}
+
+/** Resend a notification by log id. */
+export async function resendNotification(id) {
+  const res = await fetch(`${API_BASE}/api/me/notifications/${id}/resend`, {
+    method: 'POST',
+    headers: headers(),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Resend failed');
+  return data;
+}
+
 export async function getTracks(params = {}) {
   const q = new URLSearchParams(params).toString();
   const res = await fetch(`${API_BASE}/api/tracks${q ? '?' + q : ''}`, { headers: headers() });
