@@ -53,6 +53,26 @@ export async function runStartupMigrations() {
       if (e.code !== '42701') throw e; /* duplicate_column = already exists */
     }
     try {
+      await pool.query(`ALTER TABLE push_subscriptions ADD COLUMN id SERIAL`);
+    } catch (e) {
+      if (e.code !== '42701') throw e; /* duplicate_column */
+    }
+    try {
+      await pool.query(`ALTER TABLE push_subscriptions DROP CONSTRAINT push_subscriptions_pkey`);
+    } catch (e) {
+      if (e.code !== '42883') throw e; /* constraint does not exist */
+    }
+    try {
+      await pool.query(`ALTER TABLE push_subscriptions ADD PRIMARY KEY (id)`);
+    } catch (e) {
+      if (e.code !== '42P16') throw e; /* multiple primary keys - already have one */
+    }
+    try {
+      await pool.query(`ALTER TABLE push_subscriptions ADD CONSTRAINT push_subscriptions_endpoint_key UNIQUE (endpoint)`);
+    } catch (e) {
+      if (e.code !== '42710') throw e; /* duplicate_object - constraint exists */
+    }
+    try {
       await pool.query(`ALTER TABLE push_notification_log ADD COLUMN recipient_name VARCHAR(255)`);
     } catch (e) {
       if (e.code !== '42701') throw e;

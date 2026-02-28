@@ -27,7 +27,7 @@ router.post('/push-subscription', async (req, res) => {
     await pool.query(
       `INSERT INTO push_subscriptions (user_id, endpoint, p256dh, auth)
        VALUES ($1, $2, $3, $4)
-       ON CONFLICT (user_id) DO UPDATE SET endpoint = $2, p256dh = $3, auth = $4`,
+       ON CONFLICT (endpoint) DO UPDATE SET user_id = $1, p256dh = $3, auth = $4`,
       [req.userId, subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth]
     );
     res.status(201).json({ ok: true });

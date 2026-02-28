@@ -1,0 +1,179 @@
+.page {
+  padding: 32px;
+  padding-bottom: 120px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.titleIcon {
+  opacity: 0.9;
+}
+
+.desc {
+  margin: 0 0 24px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.status {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.form {
+  max-width: 560px;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.label:last-of-type {
+  margin-bottom: 0;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--bg-hover);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  color: inherit;
+  font-size: 1rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.selectAllBtn {
+  margin-bottom: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--bg-hover);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.selectAllBtn:hover {
+  background: #333;
+}
+
+.userList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userItem {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--bg-hover);
+}
+
+.userItem:last-child {
+  border-bottom: none;
+}
+
+.checkLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.userName {
+  font-weight: 500;
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.userCount {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.error {
+  margin: 0 0 12px;
+  color: #f55;
+  font-size: 0.95rem;
+}
+
+.result {
+  margin: 0 0 12px;
+  color: var(--green);
+  font-size: 0.95rem;
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 24px;
+  background: var(--green);
+  color: #000;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--green-hover);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 12px;
+    padding-bottom: 24px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}

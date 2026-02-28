@@ -131,6 +131,26 @@ export async function resendNotification(id) {
   return data;
 }
 
+/** Admin: list users with push subscriptions. */
+export async function getAdminPushSubscribers() {
+  const res = await fetch(`${API_BASE}/api/admin/push-subscribers`, { headers: headers() });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Failed to fetch subscribers');
+  return data;
+}
+
+/** Admin: send push to selected users. */
+export async function adminSendPush({ title, body, url, icon, image, badge, tag, userIds }) {
+  const res = await fetch(`${API_BASE}/api/admin/send-push`, {
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify({ title, body, url, icon, image, badge, tag, userIds }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Failed to send');
+  return data;
+}
+
 export async function getTracks(params = {}) {
   const q = new URLSearchParams(params).toString();
   const res = await fetch(`${API_BASE}/api/tracks${q ? '?' + q : ''}`, { headers: headers() });

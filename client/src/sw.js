@@ -13,9 +13,19 @@ self.addEventListener('push', function (event) {
     data: { url: data.url || '/' },
   };
   // תמונה גדולה – ב-macOS לא מוצגת (מערכת ההתראות של Apple לא תומכת), רק ב-Windows/Android
-  if (data.image) options.image = data.image;
-  if (data.badge) options.badge = data.badge;
-  if (data.tag) options.tag = data.tag;
+  if (data.image && typeof data.image === 'string' && data.image.trim()) {
+    const imgUrl = data.image.trim();
+    options.image = imgUrl.startsWith('http://') || imgUrl.startsWith('https://') ? imgUrl : new URL(imgUrl, self.registration.scope).href;
+  }
+  if (data.badge && typeof data.badge === 'string' && data.badge.trim()) {
+    const badgeUrl = data.badge.trim();
+    options.badge = badgeUrl.startsWith('http://') || badgeUrl.startsWith('https://') ? badgeUrl : new URL(badgeUrl, self.registration.scope).href;
+  }
+  const tag = data.tag != null ? String(data.tag).trim() : '';
+  if (tag) {
+    options.tag = tag;
+    options.renotify = true; // כשמחליפים התראה עם אותו tag – עדיין להציג/להשמיע
+  }
   event.waitUntil(self.registration.showNotification(title, options));
 });
 

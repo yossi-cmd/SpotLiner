@@ -13,6 +13,7 @@ import artistsRoutes from './routes/artists.js';
 import albumsRoutes from './routes/albums.js';
 import uploadRoutes from './routes/upload.js';
 import youtubeRoutes from './routes/youtube.js';
+import adminRoutes from './routes/admin.js';
 import { runStartupMigrations } from './db/index.js';
 import { getVapidPublicKey } from './push.js';
 
@@ -41,6 +42,7 @@ app.use(`${apiBase}/me`, meRoutes);
 app.use(`${apiBase}/artists`, artistsRoutes);
 app.use(`${apiBase}/albums`, albumsRoutes);
 app.use(`${apiBase}/youtube`, youtubeRoutes);
+app.use(`${apiBase}/admin`, adminRoutes);
 
 app.get(`${apiBase}/health`, (req, res) => res.json({ ok: true }));
 

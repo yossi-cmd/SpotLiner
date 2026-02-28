@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { sendTestPush } from '../api';
-import { IconHome, IconSearch, IconLibrary, IconUpload, IconUser, IconDisc, IconClose, IconSettings } from './Icons';
+import { IconHome, IconSearch, IconLibrary, IconUpload, IconUser, IconDisc, IconClose, IconSettings, IconBell } from './Icons';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar({ isOpen = false, onClose }) {
@@ -79,6 +79,12 @@ export default function Sidebar({ isOpen = false, onClose }) {
           <span className={styles.icon}><IconSettings className={styles.iconSvg} /></span>
           <span>הגדרות</span>
         </NavLink>
+        {user?.role === 'admin' && (
+          <NavLink to="/admin/send-push" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)} onClick={handleNavClick}>
+            <span className={styles.icon}><IconBell className={styles.iconSvg} /></span>
+            <span>שליחת התראות</span>
+          </NavLink>
+        )}
       </nav>
       <div className={styles.user}>
         {user ? (

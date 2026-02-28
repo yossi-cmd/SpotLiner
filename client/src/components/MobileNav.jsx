@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { IconHome, IconSearch, IconLibrary, IconUser, IconDisc, IconUpload, IconSettings } from './Icons';
+import { IconHome, IconSearch, IconLibrary, IconUser, IconDisc, IconUpload, IconSettings, IconBell } from './Icons';
 import styles from './MobileNav.module.css';
 
 export default function MobileNav() {
   const canUpload = useAuthStore((s) => s.canUpload());
+  const isAdmin = useAuthStore((s) => s.user?.role === 'admin');
 
   return (
     <nav className={styles.nav} role="navigation" aria-label="ניווט ראשי">
@@ -38,6 +39,12 @@ export default function MobileNav() {
         <IconSettings size={22} className={styles.icon} />
         <span>הגדרות</span>
       </NavLink>
+      {isAdmin && (
+        <NavLink to="/admin/send-push" className={({ isActive }) => (isActive ? styles.linkActive : styles.link)}>
+          <IconBell size={22} className={styles.icon} />
+          <span>התראות</span>
+        </NavLink>
+      )}
     </nav>
   );
 }

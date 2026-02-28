@@ -19,6 +19,12 @@ export function getVapidPublicKey() {
   return keys ? keys.publicKey : null;
 }
 
+/** Log to console the full payload and meta sent to the browser (no keys/endpoints). */
+function logPushToConsole(source, payload, meta = {}) {
+  const out = { source, payload, ...meta };
+  console.log('[Push]', JSON.stringify(out, null, 2));
+}
+
 /** Send push notification for a new track to all subscribers (excluding uploader). Includes uploader name. */
 export async function notifyNewTrackToAll(uploaderName, artistId, artistName, trackTitle, trackId, excludeUserId = null) {
   const keys = getVapidKeys();
@@ -62,11 +68,13 @@ export async function notifyNewTrackToAll(uploaderName, artistId, artistName, tr
     const body = recipientName && recipientName.trim()
       ? `הי ${recipientName.trim()}, ${baseByLine}`
       : baseByLine;
-    const payload = JSON.stringify({
+    const payloadObj = {
       title: 'שיר חדש',
       body,
       url: artistId ? `/artist/${artistId}` : '/',
-    });
+    };
+    logPushToConsole('notifyNewTrackToAll', payloadObj, { recipient_user_id: row.user_id, track_id: trackId });
+    const payload = JSON.stringify(payloadObj);
     try {
       await webpush.sendNotification(
         {
@@ -109,12 +117,9 @@ export async function sendTestPushToUser(userId) {
 
   webpush.setVapidDetails('mailto:support@spotliner.local', keys.publicKey, keys.privateKey);
 
-  const payload = JSON.stringify({
-    title: 'בדיקה',
-    body: 'התראת טסט מספוטליינר',
-    url: '/',
-  });
-
+  const payloadObj = { title: 'בדיקה', body: 'התראת טסט מספוטליינר', url: '/' };
+  logPushToConsole('sendTestPushToUser', payloadObj, { user_id: userId });
+  const payload = JSON.stringify(payloadObj);
   try {
     await webpush.sendNotification(
       {
@@ -164,6 +169,11 @@ export async function sendCustomPush({ title, body, url = '/', userId = null, ic
   if (image) payloadObj.image = image;
   if (badge) payloadObj.badge = badge;
   if (tag) payloadObj.tag = tag;
+  logPushToConsole('sendCustomPush', payloadObj, {
+    target_user_id: userId ?? undefined,
+    recipient_count: subs.rows.length,
+    recipient_user_ids: subs.rows.map((r) => r.user_id),
+  });
   const payload = JSON.stringify(payloadObj);
   let sent = 0;
   const errors = [];
@@ -220,12 +230,13 @@ export async function resendPushNotification(logId, userId) {
   const bodyText = row.recipient_name && row.recipient_name.trim()
     ? `הי ${row.recipient_name.trim()}, ${baseLine}`
     : baseLine;
-  const payload = JSON.stringify({
+  const payloadObj = {
     title: 'שיר חדש',
     body: bodyText,
     url: row.artist_id ? `/artist/${row.artist_id}` : '/',
-  });
-
+  };
+  logPushToConsole('resendPushNotification', payloadObj, { log_id: logId, user_id: userId });
+  const payload = JSON.stringify(payloadObj);
   try {
     await webpush.sendNotification(
       {

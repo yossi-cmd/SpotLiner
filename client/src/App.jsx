@@ -16,6 +16,7 @@ import Albums from './pages/Albums';
 import Album from './pages/Album';
 import CreateAlbum from './pages/CreateAlbum';
 import Settings from './pages/Settings';
+import AdminSendPush from './pages/AdminSendPush';
 
 function UploadGuard() {
   const canUpload = useAuthStore((s) => s.canUpload());
@@ -33,6 +34,12 @@ function CreateAlbumGuard() {
   const canUpload = useAuthStore((s) => s.canUpload());
   if (!canUpload) return <Navigate to="/albums" replace />;
   return <CreateAlbum />;
+}
+
+function AdminSendPushGuard() {
+  const user = useAuthStore((s) => s.user);
+  if (user?.role !== 'admin') return <Navigate to="/" replace />;
+  return <AdminSendPush />;
 }
 
 function ProtectedRoute({ children, requireAuth = true }) {
@@ -71,6 +78,7 @@ function App() {
         <Route path="albums/new" element={<CreateAlbumGuard />} />
         <Route path="album/:id" element={<Album />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="admin/send-push" element={<AdminSendPushGuard />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
