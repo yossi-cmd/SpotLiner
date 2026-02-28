@@ -19,8 +19,8 @@ export function getVapidPublicKey() {
   return keys ? keys.publicKey : null;
 }
 
-/** Send push notifications to users who have favorited any track by this artist (excluding uploader). */
-export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, trackId, excludeUserId = null) {
+/** Send push notification for a new track to all subscribers (excluding uploader). Includes uploader name. */
+export async function notifyNewTrackToAll(uploaderName, artistId, artistName, trackTitle, trackId, excludeUserId = null) {
   const keys = getVapidKeys();
   if (!keys) return;
 
@@ -38,25 +38,35 @@ export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, 
   );
 
   const subs = await pool.query(
-    `SELECT ps.user_id, ps.endpoint, ps.p256dh, ps.auth
-     FROM push_subscriptions ps
-     INNER JOIN (
-       SELECT DISTINCT f.user_id
-       FROM favorites f
-       INNER JOIN tracks t ON t.id = f.track_id
-       WHERE t.artist_id = $1
-       ${excludeUserId != null ? 'AND f.user_id != $2' : ''}
-     ) u ON u.user_id = ps.user_id`,
-    excludeUserId != null ? [artistId, excludeUserId] : [artistId]
+    `SELECT user_id, endpoint, p256dh, auth FROM push_subscriptions
+     WHERE ${excludeUserId != null ? 'user_id != $1' : '1=1'}`,
+    excludeUserId != null ? [excludeUserId] : []
   );
 
-  const payload = JSON.stringify({
-    title: 'שיר חדש',
-    body: `${artistName}: ${trackTitle}`,
-    url: `/artist/${artistId}`,
-  });
+  const userIds = [...new Set(subs.rows.map((r) => r.user_id))];
+  const userNames = new Map();
+  if (userIds.length) {
+    const names = await pool.query(
+      'SELECT id, COALESCE(display_name, email) AS name FROM users WHERE id = ANY($1)',
+      [userIds]
+    );
+    names.rows.forEach((r) => userNames.set(r.id, r.name || null));
+  }
+
+  const baseByLine = uploaderName && uploaderName.trim()
+    ? `הועלה על ידי ${uploaderName.trim()}: ${artistName} – ${trackTitle}`
+    : `${artistName} – ${trackTitle}`;
 
   for (const row of subs.rows) {
+    const recipientName = userNames.get(row.user_id) || null;
+    const body = recipientName && recipientName.trim()
+      ? `הי ${recipientName.trim()}, ${baseByLine}`
+      : baseByLine;
+    const payload = JSON.stringify({
+      title: 'שיר חדש',
+      body,
+      url: artistId ? `/artist/${artistId}` : '/',
+    });
     try {
       await webpush.sendNotification(
         {
@@ -67,9 +77,9 @@ export async function notifyNewTrackForArtist(artistId, artistName, trackTitle, 
         { TTL: 60 }
       );
       await pool.query(
-        `INSERT INTO push_notification_log (user_id, track_id, artist_id, artist_name, track_title)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [row.user_id, trackId, artistId, artistName, trackTitle]
+        `INSERT INTO push_notification_log (user_id, track_id, artist_id, artist_name, track_title, uploader_name, recipient_name)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [row.user_id, trackId, artistId, artistName, trackTitle, uploaderName || null, recipientName || null]
       );
     } catch (err) {
       if (err.statusCode === 410 || err.statusCode === 404) {
@@ -126,7 +136,7 @@ export async function resendPushNotification(logId, userId) {
   if (!keys) return { sent: false, error: 'VAPID keys not set' };
 
   const log = await pool.query(
-    'SELECT id, track_id, artist_id, artist_name, track_title FROM push_notification_log WHERE id = $1 AND user_id = $2',
+    'SELECT id, track_id, artist_id, artist_name, track_title, uploader_name, recipient_name FROM push_notification_log WHERE id = $1 AND user_id = $2',
     [logId, userId]
   );
   if (!log.rows.length) return { sent: false, error: 'Notification not found' };
@@ -147,9 +157,15 @@ export async function resendPushNotification(logId, userId) {
 
   webpush.setVapidDetails('mailto:yossi@yossibiton.com', keys.publicKey, keys.privateKey);
 
+  const baseLine = row.uploader_name && row.uploader_name.trim()
+    ? `הועלה על ידי ${row.uploader_name.trim()}: ${row.artist_name || 'אומן'} – ${row.track_title || 'שיר'}`
+    : `${row.artist_name || 'אומן'}: ${row.track_title || 'שיר'}`;
+  const bodyText = row.recipient_name && row.recipient_name.trim()
+    ? `הי ${row.recipient_name.trim()}, ${baseLine}`
+    : baseLine;
   const payload = JSON.stringify({
     title: 'שיר חדש',
-    body: `${row.artist_name || 'אומן'}: ${row.track_title || 'שיר'}`,
+    body: bodyText,
     url: row.artist_id ? `/artist/${row.artist_id}` : '/',
   });
 

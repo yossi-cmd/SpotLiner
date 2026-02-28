@@ -41,7 +41,7 @@ router.get('/notifications', async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
     const r = await pool.query(
-      `SELECT id, track_id, artist_id, artist_name, track_title, sent_at
+      `SELECT id, track_id, artist_id, artist_name, track_title, uploader_name, recipient_name, sent_at
        FROM push_notification_log
        WHERE user_id = $1
        ORDER BY sent_at DESC

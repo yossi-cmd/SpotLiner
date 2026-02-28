@@ -47,6 +47,16 @@ export async function runStartupMigrations() {
       )
     `);
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_push_notification_log_user ON push_notification_log(user_id)`);
+    try {
+      await pool.query(`ALTER TABLE push_notification_log ADD COLUMN uploader_name VARCHAR(255)`);
+    } catch (e) {
+      if (e.code !== '42701') throw e; /* duplicate_column = already exists */
+    }
+    try {
+      await pool.query(`ALTER TABLE push_notification_log ADD COLUMN recipient_name VARCHAR(255)`);
+    } catch (e) {
+      if (e.code !== '42701') throw e;
+    }
   } catch (err) {
     console.error('Startup migration (track_featured_artists) failed:', err.message);
   }

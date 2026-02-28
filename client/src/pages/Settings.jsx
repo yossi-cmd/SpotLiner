@@ -150,7 +150,12 @@ export default function Settings() {
               <li key={n.id} className={styles.notifItem}>
                 <div className={styles.notifContent}>
                   <span className={styles.notifText}>
-                    {n.artist_name && n.track_title ? `${n.artist_name}: ${n.track_title}` : n.track_title || n.artist_name || 'התראה'}
+                    {(() => {
+                      const uploaderPart = n.uploader_name?.trim()
+                        ? `הועלה על ידי ${n.uploader_name.trim()}: ${[n.artist_name, n.track_title].filter(Boolean).join(' – ') || 'שיר חדש'}`
+                        : (n.artist_name && n.track_title ? `${n.artist_name}: ${n.track_title}` : n.track_title || n.artist_name || 'התראה');
+                      return n.recipient_name?.trim() ? `הי ${n.recipient_name.trim()}, ${uploaderPart}` : uploaderPart;
+                    })()}
                   </span>
                   {n.artist_id && (
                     <Link to={`/artist/${n.artist_id}`} className={styles.notifLink}>לאומן</Link>

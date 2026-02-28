@@ -247,8 +247,10 @@ router.post('/', auth, requireRole(['admin', 'uploader']), upload.single('audio'
     );
     const track = result.rows[0];
     try {
-      const { notifyNewTrackForArtist } = await import('../push.js');
-      await notifyNewTrackForArtist(artistId, artistName, track.title, track.id, req.userId);
+      const u = await pool.query('SELECT COALESCE(display_name, email) AS name FROM users WHERE id = $1', [req.userId]);
+      const uploaderName = u.rows[0]?.name || null;
+      const { notifyNewTrackToAll } = await import('../push.js');
+      await notifyNewTrackToAll(uploaderName, artistId, artistName, track.title, track.id, req.userId);
     } catch (e) {
       console.warn('Push notify failed:', e.message);
     }
