@@ -74,7 +74,7 @@
   max-width: 180px;
 }
 
-a.artist:hover,
+.artist a:hover,
 a.album:hover {
   color: var(--green);
   text-decoration: underline;
