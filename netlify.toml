@@ -3,7 +3,8 @@
 
 [build]
   base    = "client"
-  command = "npm run build"
+  # התקנת תלויות הפונקציה (server + serverless-http) כדי שה-API יעבוד
+  command = "(cd ../netlify/functions && npm install) && npm run build"
   publish = "dist"
 
 [build.environment]
@@ -15,13 +16,11 @@
   from   = "/api/*"
   to     = "/.netlify/functions/server"
   status = 200
-  force  = true
 
 [[redirects]]
   from   = "/uploads/*"
   to     = "/.netlify/functions/server"
   status = 200
-  force  = true
 
 # SPA: כל נתיב שלא קובץ סטטי מנותב ל-index.html
 [[redirects]]
