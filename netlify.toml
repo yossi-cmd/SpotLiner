@@ -1,16 +1,30 @@
 # Netlify – Spotliner (ספוטליינר)
-# פרונט בלבד: הקליינט נבנה כאן; הבקאנד (server) צריך להיות מפורס במקום נפרד
+# קליינט + API (פונקציית serverless)
 
 [build]
   base    = "client"
   command = "npm run build"
   publish = "dist"
 
-# SPA: כל נתיב שלא קובץ סטטי מנותב ל-index.html
-[[redirects]]
-  from    = "/*"
-  to      = "/index.html"
-  status  = 200
-
 [build.environment]
   NODE_VERSION = "20"
+  NETLIFY      = "true"
+
+# API ו-uploads → פונקציית השרת (לפני ה-SPA)
+[[redirects]]
+  from   = "/api/*"
+  to     = "/.netlify/functions/server"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/uploads/*"
+  to     = "/.netlify/functions/server"
+  status = 200
+  force  = true
+
+# SPA: כל נתיב שלא קובץ סטטי מנותב ל-index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

@@ -1,0 +1,9 @@
+{
+  "name": "spotliner-netlify-functions",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "serverless-http": "^3.2.0",
+    "server": "file:../../server"
+  }
+}

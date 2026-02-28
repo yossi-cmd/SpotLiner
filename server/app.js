@@ -58,7 +58,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Server error' });
 });
 
-if (!process.env.VERCEL) {
+if (!process.env.VERCEL && !process.env.NETLIFY) {
   runStartupMigrations()
     .then(() => {
       app.listen(PORT, () => {
