@@ -130,6 +130,63 @@ export async function sendTestPushToUser(userId) {
   }
 }
 
+/**
+ * Send a custom push message to all subscribers or to a specific user.
+ * Optional: icon (URL), image (URL, large image – limited support), badge (URL), tag (replace/group).
+ * @param {{ title: string, body: string, url?: string, userId?: number, icon?: string, image?: string, badge?: string, tag?: string }} options
+ * @returns {{ sent: number, failed: number, errors?: string[] }}
+ */
+export async function sendCustomPush({ title, body, url = '/', userId = null, icon = null, image = null, badge = null, tag = null }) {
+  const keys = getVapidKeys();
+  if (!keys) return { sent: 0, failed: 0, errors: ['VAPID keys not set'] };
+
+  let webpush;
+  try {
+    webpush = (await import('web-push')).default;
+  } catch {
+    return { sent: 0, failed: 0, errors: ['web-push not installed'] };
+  }
+
+  webpush.setVapidDetails(
+    'mailto:yossi@yossibiton.com',
+    keys.publicKey,
+    keys.privateKey
+  );
+
+  const subs = await pool.query(
+    `SELECT user_id, endpoint, p256dh, auth FROM push_subscriptions
+     WHERE ${userId != null ? 'user_id = $1' : '1=1'}`,
+    userId != null ? [userId] : []
+  );
+
+  const payloadObj = { title: title || 'הודעה', body: body || '', url };
+  if (icon) payloadObj.icon = icon;
+  if (image) payloadObj.image = image;
+  if (badge) payloadObj.badge = badge;
+  if (tag) payloadObj.tag = tag;
+  const payload = JSON.stringify(payloadObj);
+  let sent = 0;
+  const errors = [];
+
+  for (const row of subs.rows) {
+    try {
+      await webpush.sendNotification(
+        { endpoint: row.endpoint, keys: { p256dh: row.p256dh, auth: row.auth } },
+        payload,
+        { TTL: 60 }
+      );
+      sent++;
+    } catch (err) {
+      if (err.statusCode === 410 || err.statusCode === 404) {
+        await pool.query('DELETE FROM push_subscriptions WHERE endpoint = $1', [row.endpoint]);
+      }
+      errors.push(`user ${row.user_id}: ${err.message || String(err)}`);
+    }
+  }
+
+  return { sent, failed: subs.rows.length - sent, errors: errors.length ? errors : undefined };
+}
+
 /** Resend a previously sent notification (by log id) to the same user. */
 export async function resendPushNotification(logId, userId) {
   const keys = getVapidKeys();

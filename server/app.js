@@ -25,6 +25,11 @@ const apiBase = process.env.VERCEL ? '' : '/api';
 const app = express();
 app.use(cors({ origin: CLIENT_URL, credentials: true }));
 app.use(express.json());
+// Allow notification images to load from any origin (browser fetches image when showing push)
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
 app.use('/uploads', express.static(uploadsBase));
 
 app.use(`${apiBase}/auth`, authRoutes);

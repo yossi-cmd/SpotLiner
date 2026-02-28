@@ -90,14 +90,12 @@ router.post('/:id/tracks', async (req, res) => {
   try {
     const { trackId, position } = req.body;
     if (!trackId) return res.status(400).json({ error: 'trackId required' });
-    await pool.query(
-      'INSERT INTO playlists (id, user_id) SELECT $1, $2 WHERE EXISTS (SELECT 1 FROM playlists WHERE id = $1 AND user_id = $2)',
-      [req.params.id, req.userId]
-    );
+    const pl = await pool.query('SELECT id FROM playlists WHERE id = $1 AND user_id = $2', [req.params.id, req.userId]);
+    if (!pl.rows.length) return res.status(404).json({ error: 'Playlist not found' });
     const maxPos = await pool.query('SELECT COALESCE(MAX(position), 0) + 1 AS p FROM playlist_tracks WHERE playlist_id = $1', [req.params.id]);
     const pos = typeof position === 'number' ? position : maxPos.rows[0].p;
     await pool.query(
-      'INSERT INTO playlist_tracks (playlist_id, track_id, position) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING',
+      'INSERT INTO playlist_tracks (playlist_id, track_id, position) VALUES ($1, $2, $3) ON CONFLICT (playlist_id, track_id) DO NOTHING',
       [req.params.id, trackId, pos]
     );
     res.status(201).json({ added: true });

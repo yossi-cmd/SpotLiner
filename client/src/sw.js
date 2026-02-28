@@ -9,9 +9,13 @@ self.addEventListener('push', function (event) {
   const title = data.title || 'ספוטליינר';
   const options = {
     body: data.body || '',
-    icon: '/favicon.svg',
+    icon: data.icon || '/favicon.svg',
     data: { url: data.url || '/' },
   };
+  // תמונה גדולה – ב-macOS לא מוצגת (מערכת ההתראות של Apple לא תומכת), רק ב-Windows/Android
+  if (data.image) options.image = data.image;
+  if (data.badge) options.badge = data.badge;
+  if (data.tag) options.tag = data.tag;
   event.waitUntil(self.registration.showNotification(title, options));
 });
 

@@ -10,7 +10,8 @@
     "dev:server": "cd server && npm run dev",
     "build": "cd client && npm install && npm run build",
     "start": "cd server && npm start",
-    "db:migrate": "cd server && node db/migrate.js"
+    "db:migrate": "cd server && node db/migrate.js",
+    "send-push": "cd server && node scripts/send-push.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
